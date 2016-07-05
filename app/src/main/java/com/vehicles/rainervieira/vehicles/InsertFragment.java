@@ -1,5 +1,6 @@
 package com.vehicles.rainervieira.vehicles;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -20,10 +21,15 @@ public class InsertFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_insert, container, false);
 
-        DatabaseHandler database = new DatabaseHandler(rootView.getContext());
+        DatabaseHandler database_helper = new DatabaseHandler(rootView.getContext());
+        SQLiteDatabase database = database_helper.getWritableDatabase();
 
-        Log.d("MARCAS", "rows: ");
-                //Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner_marca);
+        //database.execSQL("DROP TABLE veiculos_marcas");
+
+        database_helper.testTable(database);
+        database_helper.close();
+
+        //Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner_marca);
 
 
 

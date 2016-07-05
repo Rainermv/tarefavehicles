@@ -7,12 +7,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by Rainer on 05/07/2016.
  */
 public class DatabaseHandler extends SQLiteOpenHelper{
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "posgrad";
     private static final String TABLE_VEICULOS = "veiculos";
     private static final String TABLE_VEICULOS_MARCAS = "veiculos_marcas";
@@ -36,9 +38,9 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
 
         createTables(db);
-        populateTables(db);
 
-        testTable(db);
+        populateTables(db);
+        //testTable(db);
 
     }
 
@@ -69,23 +71,68 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     }
 
-    private void populateTables(SQLiteDatabase db){
+    public void populateTables(SQLiteDatabase db){
 
-        ContentValues marcas = new ContentValues();
-        marcas.put(KEY_MARCA, "Wolksvagen");
+        // MARCAS
+        ArrayList<String> marcas_array = new ArrayList<String>();
 
-        db.insert(TABLE_VEICULOS_MARCAS, null, marcas );
+        marcas_array.add("Wolksvagen");
+        marcas_array.add("Fiat");
+        marcas_array.add("Renault");
+
+        for (String marca_string: marcas_array ){
+
+            ContentValues row_marca = new ContentValues();
+            row_marca.put(KEY_MARCA,marca_string);
+
+            db.insert(TABLE_VEICULOS_MARCAS, null, row_marca );
+
+            Log.d("DB", "inserting: " + marca_string);
+        }
+
+        // MODELOS
+        ArrayList<String> modelos_array = new ArrayList<String>();
+
+        modelos_array.add("Gol");
+        modelos_array.add("Uno");
+        modelos_array.add("Clio");
+
+        for (String modelo_string: modelos_array ){
+
+            ContentValues row_modelo = new ContentValues();
+            row_modelo.put(KEY_MODELO,modelo_string);
+
+            db.insert(TABLE_VEICULOS_MODELOS, null, row_modelo );
+
+            Log.d("DB", "inserting: " + modelo_string);
+        }
+
     }
 
-    private void testTable(SQLiteDatabase db){
+    public void testTable(SQLiteDatabase db){
 
         Cursor rows = db.query(false, TABLE_VEICULOS_MARCAS, null, null, null,null, null, null, null);
 
-        Log.d("MARCAS", "rows: " + rows.getCount());
+        while (rows.moveToNext()) {
+            Log.d("DB", "MARCA : " + rows.getString(0));
+            Log.d("DB", "MARCA : " + rows.getString(1));
+        }
+
+        rows = db.query(false, TABLE_VEICULOS_MODELOS, null, null, null,null, null, null, null);
+
+        while (rows.moveToNext()) {
+            Log.d("DB", "MODELO : " + rows.getString(0));
+            Log.d("DB", "MODELO : " + rows.getString(1));
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        db.delete(TABLE_VEICULOS_MARCAS, null, null);
+        db.delete(TABLE_VEICULOS_MODELOS, null, null);
+
+        populateTables(db);
 
     }
 }

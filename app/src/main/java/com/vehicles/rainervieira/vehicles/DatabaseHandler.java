@@ -14,13 +14,13 @@ import java.util.ArrayList;
  */
 public class DatabaseHandler extends SQLiteOpenHelper{
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 9;
     private static final String DATABASE_NAME = "posgrad";
     private static final String TABLE_VEICULOS = "veiculos";
     private static final String TABLE_VEICULOS_MARCAS = "veiculos_marcas";
     private static final String TABLE_VEICULOS_MODELOS = "veiculos_modelos";
 
-    private static final String KEY_ID = "id";
+    private static final String KEY_ID = "_id";
     private static final String KEY_MARCA = "marca";
     private static final String KEY_MODELO = "modelo";
     private static final String KEY_PLACA = "placa";
@@ -56,12 +56,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         String CREATE_VEICULOS_MARCAS =
                 "CREATE TABLE " + TABLE_VEICULOS_MARCAS +
-                        "(" + KEY_ID_MARCA + " INTEGER PRIMARY KEY, " +
+                        "(" + KEY_ID + " INTEGER PRIMARY KEY, " +
                         KEY_MARCA + " VARCHAR(32))";
 
         String CREATE_VEICULOS_MODELOS =
                 "CREATE TABLE " + TABLE_VEICULOS_MODELOS +
-                        "(" + KEY_ID_MODELO + " INTEGER PRIMARY KEY, " +
+                        "(" + KEY_ID + " INTEGER PRIMARY KEY, " +
                         KEY_MODELO + " VARCHAR(32))";
 
 
@@ -80,12 +80,16 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         marcas_array.add("Fiat");
         marcas_array.add("Renault");
 
+        int id = 0;
         for (String marca_string: marcas_array ){
 
             ContentValues row_marca = new ContentValues();
             row_marca.put(KEY_MARCA,marca_string);
-
             db.insert(TABLE_VEICULOS_MARCAS, null, row_marca );
+
+            //ContentValues row_id = new ContentValues();
+            //row_id.put(KEY_ID,id++);
+            //db.insert(TABLE_VEICULOS_MARCAS, null, row_id );
 
             Log.d("DB", "inserting: " + marca_string);
         }
@@ -97,12 +101,16 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         modelos_array.add("Uno");
         modelos_array.add("Clio");
 
+        id = 0;
         for (String modelo_string: modelos_array ){
 
             ContentValues row_modelo = new ContentValues();
             row_modelo.put(KEY_MODELO,modelo_string);
-
             db.insert(TABLE_VEICULOS_MODELOS, null, row_modelo );
+
+            //ContentValues row_id = new ContentValues();
+            //row_id.put(KEY_ID,id++);
+            //db.insert(TABLE_VEICULOS_MODELOS, null, row_id );
 
             Log.d("DB", "inserting: " + modelo_string);
         }
@@ -132,7 +140,21 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.delete(TABLE_VEICULOS_MARCAS, null, null);
         db.delete(TABLE_VEICULOS_MODELOS, null, null);
 
+        Log.d("DB", "Tables deleted - repopulating");
+
         populateTables(db);
+
+    }
+
+    public Cursor getMarcas(SQLiteDatabase db){
+
+        return db.query(false, TABLE_VEICULOS_MARCAS, null, null, null,null, null, null, null);
+
+    }
+
+    public Cursor getModelos(SQLiteDatabase db){
+
+        return db.query(false, TABLE_VEICULOS_MODELOS, null, null, null,null, null, null, null);
 
     }
 }

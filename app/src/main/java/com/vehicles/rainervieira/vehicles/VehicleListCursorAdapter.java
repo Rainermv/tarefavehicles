@@ -27,10 +27,10 @@ public class VehicleListCursorAdapter extends CursorAdapter {
 
         // Find fields to populate in inflated template
         TextView text_id = (TextView) view.findViewById(R.id.query_text_id);
-        TextView text_marca = (TextView) view.findViewById(R.id.text_marca);
-        TextView text_modelo = (TextView) view.findViewById(R.id.text_modelo);
-        TextView text_placa = (TextView) view.findViewById(R.id.text_placa);
-        TextView text_ano = (TextView) view.findViewById(R.id.text_ano);
+        TextView text_marca = (TextView) view.findViewById(R.id.query_text_marca);
+        TextView text_modelo = (TextView) view.findViewById(R.id.query_text_modelo);
+        TextView text_placa = (TextView) view.findViewById(R.id.query_text_placa);
+        TextView text_ano = (TextView) view.findViewById(R.id.query_text_ano);
 
         // Extract properties from cursor
         String id = cursor.getString(cursor.getColumnIndexOrThrow("_id"));

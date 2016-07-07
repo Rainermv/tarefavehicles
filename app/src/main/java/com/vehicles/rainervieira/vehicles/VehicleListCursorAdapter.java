@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
@@ -31,6 +32,8 @@ public class VehicleListCursorAdapter extends CursorAdapter {
         TextView text_modelo = (TextView) view.findViewById(R.id.query_text_modelo);
         TextView text_placa = (TextView) view.findViewById(R.id.query_text_placa);
         TextView text_ano = (TextView) view.findViewById(R.id.query_text_ano);
+        //DeleteButton button_delete = (DeleteButton) view.findViewById(R.id.button_delete);
+
 
         // Extract properties from cursor
         String id = cursor.getString(cursor.getColumnIndexOrThrow("_id"));
@@ -45,6 +48,7 @@ public class VehicleListCursorAdapter extends CursorAdapter {
         text_modelo.setText(modelo);
         text_placa.setText(placa);
         text_ano.setText(ano);
+        //button_delete.setCarId(id);
 
     }
 }

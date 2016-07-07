@@ -1,6 +1,8 @@
 package com.vehicles.rainervieira.vehicles;
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -175,9 +178,26 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
         ListView list_vehicles = (ListView) this.findViewById(R.id.list_vehicles);
         list_vehicles.setAdapter(adapter);
 
+        final Activity act = this;
+
+        list_vehicles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /* Parameters
+            parent:     The AdapterView where the click happened.
+            view:       The view within the AdapterView that was clicked (this will be a view provided by the adapter)
+            position:   The position of the view in the adapter.
+            id:         The row id of the item that was clicked. */
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(act, OpenVehicleActivity.class);
+
+                startActivity(intent);
+            }
+        });
+
         //database_helper.close();
 
     }
+
 
 }
 

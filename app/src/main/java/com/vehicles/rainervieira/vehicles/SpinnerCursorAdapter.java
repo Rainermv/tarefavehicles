@@ -2,6 +2,7 @@ package com.vehicles.rainervieira.vehicles;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +13,15 @@ import android.widget.TextView;
 /**
  * Created by rainervieira on 06/07/2016.
  */
-public class ExtendedCursorAdapter extends CursorAdapter implements SpinnerAdapter {
+public class SpinnerCursorAdapter extends CursorAdapter implements SpinnerAdapter {
 
     private String column_name = "marca";
 
-    public ExtendedCursorAdapter(Context context, Cursor c, int flags) {
+    public SpinnerCursorAdapter(Context context, Cursor c, int flags) {
         super(context, c, 0);
     }
 
-    public ExtendedCursorAdapter(Context context, Cursor c, int flags, String column_name) {
+    public SpinnerCursorAdapter(Context context, Cursor c, int flags, String column_name) {
         super(context, c, 0);
         this.column_name = column_name;
     }

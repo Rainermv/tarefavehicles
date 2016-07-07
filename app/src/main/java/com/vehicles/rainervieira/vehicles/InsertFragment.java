@@ -1,12 +1,9 @@
 package com.vehicles.rainervieira.vehicles;
 
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +21,8 @@ public class InsertFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_insert, container, false);
 
-        DatabaseHandler database_helper = new DatabaseHandler(rootView.getContext());
+
+        DatabaseHandler database_helper = DatabaseHandler.getInstance(rootView.getContext());
         SQLiteDatabase database = database_helper.getWritableDatabase();
 
         //database.execSQL("DROP TABLE veiculos_marcas");
@@ -35,8 +33,8 @@ public class InsertFragment extends Fragment {
         Spinner spinner_marca = (Spinner) rootView.findViewById(R.id.spinner_marca);
         Spinner spinner_modelo = (Spinner) rootView.findViewById(R.id.spinner_modelo);
 
-        ExtendedCursorAdapter adapter_marca = new ExtendedCursorAdapter(rootView.getContext(), marcas, 0, "marca");
-        ExtendedCursorAdapter adapter_modelo = new ExtendedCursorAdapter(rootView.getContext(), modelos, 0, "modelo");
+        SpinnerCursorAdapter adapter_marca = new SpinnerCursorAdapter(rootView.getContext(), marcas, 0, "marca");
+        SpinnerCursorAdapter adapter_modelo = new SpinnerCursorAdapter(rootView.getContext(), modelos, 0, "modelo");
         //adapter.setDropDownViewResource();
 
         spinner_marca.setAdapter(adapter_marca);
@@ -46,6 +44,8 @@ public class InsertFragment extends Fragment {
 
         return rootView;
     }
+
+
 
 
 }

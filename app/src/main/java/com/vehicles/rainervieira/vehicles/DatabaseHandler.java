@@ -3,6 +3,7 @@ package com.vehicles.rainervieira.vehicles;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -14,7 +15,11 @@ import java.util.ArrayList;
  */
 public class DatabaseHandler extends SQLiteOpenHelper{
 
-    private static final int DATABASE_VERSION = 9;
+    //SQLiteDatabase db;
+
+    private static DatabaseHandler instance;
+
+    private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "posgrad";
     private static final String TABLE_VEICULOS = "veiculos";
     private static final String TABLE_VEICULOS_MARCAS = "veiculos_marcas";
@@ -29,7 +34,18 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String KEY_ID_MARCA = "id_marca";
     private static final String KEY_ID_MODELO = "id_modelo";
 
-    public DatabaseHandler(Context context){
+    public static synchronized DatabaseHandler getInstance(Context context) {
+
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        // See this article for more information: http://bit.ly/6LRzfx
+        if (instance == null) {
+            instance = new DatabaseHandler(context.getApplicationContext());
+        }
+        return instance;
+    }
+
+    private DatabaseHandler(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -42,6 +58,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         populateTables(db);
         //testTable(db);
 
+        //this.db = db;
+
     }
 
     private void createTables(SQLiteDatabase db){
@@ -49,8 +67,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         String CREATE_VEICULOS =
                 "CREATE TABLE " + TABLE_VEICULOS +
                         "(" + KEY_ID + " INTEGER PRIMARY KEY, " +
-                        KEY_ID_MARCA + " INTEGER, " +
-                        KEY_ID_MODELO + " INTEGER, " +
+                        KEY_MARCA + " VARCHAR(32), " +
+                        KEY_MODELO + " VARCHAR(32), " +
                         KEY_PLACA + " VARCHAR(7), " +
                         KEY_ANO + " INTEGER)";
 
@@ -132,6 +150,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             Log.d("DB", "MODELO : " + rows.getString(0));
             Log.d("DB", "MODELO : " + rows.getString(1));
         }
+
+
     }
 
     @Override
@@ -143,6 +163,31 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         Log.d("DB", "Tables deleted - repopulating");
 
         populateTables(db);
+
+        //this.db = db;
+
+    }
+
+    public void InsertVeiculo(SQLiteDatabase db, String marca, String modelo, String placa, String ano){
+
+        ContentValues veiculo_content = new ContentValues();
+
+        veiculo_content.put(KEY_MARCA,marca);
+        veiculo_content.put(KEY_MODELO,modelo);
+        veiculo_content.put(KEY_PLACA,placa);
+        veiculo_content.put(KEY_ANO,ano);
+
+        db.insert(TABLE_VEICULOS, null, veiculo_content );
+
+        long count = DatabaseUtils.queryNumEntries(db, TABLE_VEICULOS);
+
+        Log.d("DB", "Veículo inserido, contagem: " + count);
+
+    }
+
+    public Cursor getVeiculos(SQLiteDatabase db){
+
+        return db.query(false, TABLE_VEICULOS, null, null, null,null, null, null, null);
 
     }
 

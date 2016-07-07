@@ -1,5 +1,8 @@
 package com.vehicles.rainervieira.vehicles;
 
+import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -7,11 +10,21 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ScrollView;
+import android.widget.Spinner;
 
 /**
  * Created by Rainer on 05/07/2016.
  */
 public class ScreenSlidePagerActivity extends FragmentActivity {
+
+    QueryFragment query_fragment;
+    InsertFragment insert_fragment;
 
     /**
      * The number of pages (wizard steps) to show in this demo.
@@ -69,14 +82,20 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
             switch (position){
 
                 case 0:
-                    return new ScreenSlidePageFragment();
+                    if (query_fragment == null){
+                        query_fragment = new QueryFragment();
+                    }
+                    return query_fragment;
 
                 case 1:
-                    return new InsertFragment();
+                    if (insert_fragment == null){
+                        insert_fragment = new InsertFragment();
+                    }
+                    return insert_fragment;
 
             }
 
-            return new ScreenSlidePageFragment();
+            return null;
 
         }
 
@@ -85,6 +104,81 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
             return NUM_PAGES;
         }
     }
+
+    public void InsertVehicle(View view){
+
+        Spinner spinner_marca = (Spinner) this.findViewById(R.id.spinner_marca);
+        Cursor selected_cursor_marca = (Cursor)spinner_marca.getSelectedItem();
+        String marca = selected_cursor_marca.getString(selected_cursor_marca.getColumnIndexOrThrow("marca"));
+
+        Spinner spinner_modelo = (Spinner) this.findViewById(R.id.spinner_modelo);
+        Cursor selected_cursor_modelo = (Cursor) spinner_modelo.getSelectedItem();
+        String modelo = selected_cursor_modelo.getString(selected_cursor_modelo.getColumnIndexOrThrow("modelo"));
+
+        EditText text_placa = (EditText) this.findViewById(R.id.text_placa);
+        String placa = text_placa.getText().toString();
+
+        EditText text_ano = (EditText) this.findViewById(R.id.text_ano);
+        String ano = text_ano.getText().toString();
+
+        DatabaseHandler database_helper = DatabaseHandler.getInstance(this);
+        SQLiteDatabase database = database_helper.getWritableDatabase();
+
+        database_helper.InsertVeiculo(database, marca, modelo, placa, ano);
+
+        AlertDialog alert;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Operação Concluida");
+        builder.setMessage("Veículo cadastrado com sucesso");
+        builder.setPositiveButton("Ok",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog,
+                                        int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        alert = builder.create();
+        alert.show();
+
+        spinner_marca.setSelection(0);
+        spinner_modelo.setSelection(0);
+        text_placa.setText("");
+        text_ano.setText("");
+
+        database_helper.close();
+    }
+
+    public void queryVehicles(View view){
+
+        EditText search_marca = (EditText) this.findViewById(R.id.search_marca);
+        String marca = search_marca.getText().toString();
+
+        EditText search_modelo = (EditText) this.findViewById(R.id.search_modelo);
+        String modelo = search_modelo.getText().toString();
+
+        EditText search_placa = (EditText) this.findViewById(R.id.search_placa);
+        String placa = search_placa.getText().toString();
+
+        EditText search_ano = (EditText) this.findViewById(R.id.search_ano);
+        String ano = search_ano.getText().toString();
+
+        DatabaseHandler database_helper = DatabaseHandler.getInstance(this);;
+        SQLiteDatabase database = database_helper.getReadableDatabase();
+
+        Cursor veiculos = database_helper.getVeiculos(database);
+
+        VehicleListCursorAdapter adapter = new VehicleListCursorAdapter(this, veiculos,0);
+
+        ListView list_vehicles = (ListView) this.findViewById(R.id.list_vehicles);
+        list_vehicles.setAdapter(adapter);
+
+        //database_helper.close();
+
+    }
+
 }
 
 /**

@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Rainer on 05/07/2016.
@@ -185,9 +187,78 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     }
 
-    public Cursor getVeiculos(SQLiteDatabase db){
+    public int UpdateVeiculo(SQLiteDatabase db, String v_id,  String marca, String modelo, String placa, String ano) {
 
-        return db.query(false, TABLE_VEICULOS, null, null, null,null, null, null, null);
+        ContentValues veiculo_content = new ContentValues();
+
+        veiculo_content.put(KEY_MARCA,marca);
+        veiculo_content.put(KEY_MODELO,modelo);
+        veiculo_content.put(KEY_PLACA,placa);
+        veiculo_content.put(KEY_ANO,ano);
+
+        int result = db.update(TABLE_VEICULOS, veiculo_content, KEY_ID + " = " + v_id , null);
+
+        Log.d("DB", "Veículo atualizado: " + result);
+
+        return result;
+
+    }
+
+    public int DeleteVeiculo(SQLiteDatabase db, String v_id) {
+
+        int result = db.delete(TABLE_VEICULOS, KEY_ID + " = " + v_id, null);
+
+        Log.d("DB", "Veículo removido: " + result);
+
+        return result;
+    }
+
+    public Cursor getVeiculos(SQLiteDatabase db, String marca, String modelo, String placa, String ano){
+
+        HashMap<String, String> where_array = new HashMap<String, String>();
+
+        if (!marca.equals("")){
+            where_array.put("marca",marca);
+        }
+        if (!modelo.equals("")){
+            where_array.put("modelo",modelo);
+        }
+        if (!placa.equals("")){
+            where_array.put("placa",placa);
+        }
+        if (!ano.equals("")){
+            where_array.put("ano",ano);
+        }
+
+        String whereClause = null;
+        String[] whereArgs  = null;
+
+        int size = where_array.size();
+
+        if (size > 0) {
+
+            whereClause = "";
+            whereArgs = new String[size];
+
+            int i = 0;
+            for (String key : where_array.keySet()) {
+
+                whereClause += key + " = ? ";
+                whereArgs[i] = where_array.get(key);
+
+                if (i+1 < size)
+                    whereClause += " AND ";
+
+                i++;
+            }
+
+            Log.d("DB", "whereClause: " + whereClause);
+            Log.d("DB", "whereArgs: " + whereArgs.toString());
+
+        }
+
+
+        return db.query(false, TABLE_VEICULOS, null, whereClause, whereArgs,null, null, null, null);
 
     }
 
@@ -202,4 +273,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return db.query(false, TABLE_VEICULOS_MODELOS, null, null, null,null, null, null, null);
 
     }
+
+
+
 }

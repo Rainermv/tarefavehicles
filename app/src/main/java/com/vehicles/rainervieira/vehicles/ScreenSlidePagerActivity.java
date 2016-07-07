@@ -152,7 +152,7 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
         text_placa.setText("");
         text_ano.setText("");
 
-        database_helper.close();
+        //database_helper.close();
     }
 
     public void queryVehicles(View view){
@@ -172,7 +172,7 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
         DatabaseHandler database_helper = DatabaseHandler.getInstance(this);;
         SQLiteDatabase database = database_helper.getReadableDatabase();
 
-        Cursor veiculos = database_helper.getVeiculos(database);
+        Cursor veiculos = database_helper.getVeiculos(database, marca.trim(), modelo.trim(), placa.trim(), ano.trim());
 
         VehicleListCursorAdapter adapter = new VehicleListCursorAdapter(this, veiculos,0);
 
@@ -192,19 +192,19 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
 
                 Intent intent = new Intent(act, OpenVehicleActivity.class);
 
-                TextView query_text_id = (TextView) parent.findViewById(R.id.query_text_id);
+                TextView query_text_id = (TextView) view.findViewById(R.id.query_text_id);
                 String car_id = query_text_id.getText().toString();
 
-                TextView query_text_marca = (TextView) parent.findViewById(R.id.query_text_marca);
+                TextView query_text_marca = (TextView) view.findViewById(R.id.query_text_marca);
                 String marca = query_text_marca.getText().toString();
 
-                TextView query_text_modelo = (TextView) parent.findViewById(R.id.query_text_modelo);
+                TextView query_text_modelo = (TextView) view.findViewById(R.id.query_text_modelo);
                 String modelo = query_text_modelo.getText().toString();
 
-                TextView query_text_placa = (TextView) parent.findViewById(R.id.query_text_placa);
+                TextView query_text_placa = (TextView) view.findViewById(R.id.query_text_placa);
                 String placa = query_text_placa.getText().toString();
 
-                TextView query_text_ano = (TextView) parent.findViewById(R.id.query_text_ano);
+                TextView query_text_ano = (TextView) view.findViewById(R.id.query_text_ano);
                 String ano = query_text_ano.getText().toString();
 
                 intent.putExtra("car_id", car_id);

@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 /**
  * Created by Rainer on 05/07/2016.
@@ -188,7 +189,29 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
             id:         The row id of the item that was clicked. */
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 Intent intent = new Intent(act, OpenVehicleActivity.class);
+
+                TextView query_text_id = (TextView) parent.findViewById(R.id.query_text_id);
+                String car_id = query_text_id.getText().toString();
+
+                TextView query_text_marca = (TextView) parent.findViewById(R.id.query_text_marca);
+                String marca = query_text_marca.getText().toString();
+
+                TextView query_text_modelo = (TextView) parent.findViewById(R.id.query_text_modelo);
+                String modelo = query_text_modelo.getText().toString();
+
+                TextView query_text_placa = (TextView) parent.findViewById(R.id.query_text_placa);
+                String placa = query_text_placa.getText().toString();
+
+                TextView query_text_ano = (TextView) parent.findViewById(R.id.query_text_ano);
+                String ano = query_text_ano.getText().toString();
+
+                intent.putExtra("car_id", car_id);
+                intent.putExtra("marca", marca);
+                intent.putExtra("modelo", modelo);
+                intent.putExtra("placa", placa);
+                intent.putExtra("ano", ano);
 
                 startActivity(intent);
             }
@@ -196,6 +219,27 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
 
         //database_helper.close();
 
+    }
+
+    void OpenVehicle(AdapterView<?> parent, View view, int position, long id, Activity act){
+
+        Intent intent = new Intent(act, OpenVehicleActivity.class);
+
+        Spinner spinner_marca = (Spinner) this.findViewById(R.id.spinner_marca);
+        //Cursor selected_cursor_marca = (Cursor)spinner_marca.getSelectedItem();
+        //String marca = selected_cursor_marca.getString(selected_cursor_marca.getColumnIndexOrThrow("marca"));
+
+        Spinner spinner_modelo = (Spinner) this.findViewById(R.id.spinner_modelo);
+        Cursor selected_cursor_modelo = (Cursor) spinner_modelo.getSelectedItem();
+        String modelo = selected_cursor_modelo.getString(selected_cursor_modelo.getColumnIndexOrThrow("modelo"));
+
+        EditText text_placa = (EditText) this.findViewById(R.id.text_placa);
+        String placa = text_placa.getText().toString();
+
+        EditText text_ano = (EditText) this.findViewById(R.id.text_ano);
+        String ano = text_ano.getText().toString();
+
+        startActivity(intent);
     }
 
 

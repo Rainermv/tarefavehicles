@@ -52,4 +52,18 @@ public class SpinnerCursorAdapter extends CursorAdapter implements SpinnerAdapte
     public void setColumn(String c_name){
         column_name = c_name;
     }
+
+    public void getPosition(String value, Cursor cursor){
+
+        int index = 0;
+
+        for (int i=0;i<spinner.getCount();i++){
+            if (cursor.g){
+                index = i;
+                break;
+            }
+        }
+        return index;
+
+    }
 }
